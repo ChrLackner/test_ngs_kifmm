@@ -15,6 +15,8 @@ FetchContent_Declare(
   EXCLUDE_FROM_ALL
 )
 
+FetchContent_MakeAvailable(fmm3d)
+
 add_custom_target(build_fmm3d ALL
   COMMAND make lib -j 9 WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/fmm3d-src
   # BYPRODUCTS ${FETCHCONTENT_BASE_DIR}/kifmm-src/targets/kifmm_rs.h
@@ -36,6 +38,8 @@ FetchContent_Declare(
   GIT_TAG "enh/c-abi"
   EXCLUDE_FROM_ALL
 )
+
+FetchContent_MakeAvailable(kifmm)
 
 add_custom_target(build_kifmm ALL
   COMMAND cargo build -r WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/kifmm-src
