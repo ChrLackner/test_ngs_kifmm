@@ -27,6 +27,7 @@ int main() {
   Vector<> x(n), y(n);
 
   for (size_t i = 0; i < x.Size(); i++) x(i) = double(rand()) / RAND_MAX;
+  y = 0;
 
   Vector<uintptr_t> expansion_order(1);
   expansion_order = 5;  // expansion order of FMM
