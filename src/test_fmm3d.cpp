@@ -8,7 +8,7 @@ void lfmm3d_s_c_g_(double *eps, int *nsource, double *source, double *charge,
 
 double Kernel(Vec<3> px, Vec<3> py) {
   if (L2Norm2(px - py) == 0) return 0.0;
-  return 1.0 / (4 * M_PI) / L2Norm(px - py);
+  return 1.0 / L2Norm(px - py);
 }
 
 void Apply(const Array<Vec<3>> &ptx, const Array<Vec<3>> &pty, FlatVector<> x,
@@ -42,6 +42,8 @@ int main() {
   lfmm3d_s_c_g_(&eps, &n, ptx[0].Data(), x.Data(), y.Data(), grad[0].Data(),
                 &ier);
 
-  // Apply (ptx, ptx, x, y);
   cout << "y = " << y << endl;
+  cout << "grad = " << grad << endl;
+  Apply (ptx, ptx, x, y);
+  cout << "y ref = " << y << endl;
 }
