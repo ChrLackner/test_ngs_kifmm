@@ -18,7 +18,7 @@ void Apply(const Array<Vec<3>>& ptx, const Array<Vec<3>>& pty, FlatVector<> x,
 }
 
 int main() {
-  int n = 10;
+  int n = 1e6;
   Array<Vec<3>> ptx(n);
 
   for (size_t i = 0; i < ptx.Size(); i++)
@@ -32,17 +32,29 @@ int main() {
   Vector<uintptr_t> expansion_order(1);
   expansion_order = 5;  // expansion order of FMM
 
-  auto fmm = laplace_blas_f64(
+  static Timer t1("KiFMM setup");
+  t1.Start();
+  // auto fmm = laplace_blas_f64(
+  auto fmm = laplace_fft_f64(
       expansion_order.Data(), expansion_order.Size(), ptx.Data()->Data(),
       ptx.Size() * 3, ptx.Data()->Data(), ptx.Size() * 3, x.Data(), x.Size(),
       true,  // prune empty
       150,   // n_crit
       0,     // depth
-      1e-4,  // singular_value_threshold
-      false, 0, 0, 0);
-  evaluate_laplace_blas_f64(fmm, true);
-  delete fmm;
+      1);
+  // 1e-4,  // singular_value_threshold
+  // false, 0, 0, 0);
+  t1.Stop();
+  static Timer t2("KiFMM apply");
+  t2.Start();
+  // evaluate_laplace_blas_f64(fmm, true);
+  evaluate_laplace_fft_f64(fmm, true);
+  t2.Stop();
+
+  cout << "kiFMM setup time: " << t1.GetTime() << endl;
+  cout << "kiFMM apply time: " << t2.GetTime() << endl;
+  cout << "kiFMM total time: " << t1.GetTime() + t2.GetTime() << endl;
 
   // Apply (ptx, ptx, x, y);
-  cout << "y = " << y << endl;
+  // cout << "y = " << y << endl;
 }

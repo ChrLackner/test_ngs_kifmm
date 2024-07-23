@@ -4,7 +4,10 @@ using namespace ngbla;
 extern "C" {
 void lfmm3d_s_c_g_(double *eps, int *nsource, double *source, double *charge,
                    double *pot, double *grad, int *ier);
+void lfmm3d_s_c_p_(double *eps, int *nsource, double *source, double *charge,
+                   double *pot, int *ier);
 }
+
 
 double Kernel(Vec<3> px, Vec<3> py) {
   if (L2Norm2(px - py) == 0) return 0.0;
@@ -20,7 +23,7 @@ void Apply(const Array<Vec<3>> &ptx, const Array<Vec<3>> &pty, FlatVector<> x,
 }
 
 int main() {
-  int n = 10;
+  int n = 1e6;
   Array<Vec<3>> ptx(n);
 
   for (size_t i = 0; i < ptx.Size(); i++)
@@ -36,14 +39,21 @@ int main() {
   Vector<uintptr_t> expansion_order(1);
   expansion_order = 5;  // expansion order of FMM
 
-  double eps = 0.5e-6;
+  double eps = 1e-6;
   int ier = 0;
 
-  lfmm3d_s_c_g_(&eps, &n, ptx[0].Data(), x.Data(), y.Data(), grad[0].Data(),
-                &ier);
+  // lfmm3d_s_c_g_(&eps, &n, ptx[0].Data(), x.Data(), y.Data(), grad[0].Data(),
+  //               &ier);
 
-  cout << "y = " << y << endl;
-  cout << "grad = " << grad << endl;
-  Apply (ptx, ptx, x, y);
-  cout << "y ref = " << y << endl;
+  static Timer t("FMM");
+  t.Start();
+  lfmm3d_s_c_p_(&eps, &n, ptx[0].Data(), x.Data(), y.Data(),
+                  &ier);
+  t.Stop();
+  cout << "FMM3D " << t.GetTime() << endl;
+
+  // cout << "y = " << y << endl;
+  // cout << "grad = " << grad << endl;
+  //  Apply (ptx, ptx, x, y);
+  // cout << "y ref = " << y << endl;
 }
