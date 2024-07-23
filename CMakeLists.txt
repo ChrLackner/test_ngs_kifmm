@@ -15,7 +15,7 @@ FetchContent_Declare(
   EXCLUDE_FROM_ALL
 )
 
-FetchContent_MakeAvailable(fmm3d)
+FetchContent_Populate(fmm3d)
 
 add_custom_target(build_fmm3d ALL
   COMMAND make lib -j 9 WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/fmm3d-src
@@ -39,7 +39,7 @@ FetchContent_Declare(
   EXCLUDE_FROM_ALL
 )
 
-FetchContent_MakeAvailable(kifmm)
+FetchContent_Populate(kifmm)
 
 add_custom_target(build_kifmm ALL
   COMMAND cargo build -r WORKING_DIRECTORY ${FETCHCONTENT_BASE_DIR}/kifmm-src
